@@ -14,9 +14,9 @@ import App from './App.vue'
 const app = createApp(App)
 const queryClient = new QueryClient()
 const vuetify = createVuetify({
-    components,
-    directives
-  })
+  components,
+  directives,
+})
 app.use(createPinia())
 app.use(vuetify)
 app.use(router)

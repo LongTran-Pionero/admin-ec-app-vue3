@@ -7,6 +7,11 @@ export type UserType = {
   name: string
 }
 
+export type LoginFormType = {
+  email: string
+  password: string
+}
+
 export type AuthStateType = {
   user?: UserType
 }

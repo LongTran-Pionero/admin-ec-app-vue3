@@ -1,18 +1,32 @@
 <template>
-  <v-form @submit.prevent="" class="w-full">
-    <v-text-field label="Email" type="email" outlined dense placeholder="Enter your email" />
+  <Form v-slot="{ errors }" :validation-schema="schema" @submit="onSubmit">
+    <Field name="email">
+      <template #default="{ field }">
+        <v-text-field v-bind="field" :error-messages="errors.email" label="Email" type="email" />
+      </template>
+    </Field>
 
-    <v-text-field
-      label="Password"
-      type="password"
-      outlined
-      dense
-      placeholder="Enter your password"
-    />
+    <Field name="password">
+      <template #default="{ field }">
+        <v-text-field
+          v-bind="field"
+          :error-messages="errors.password"
+          label="Password"
+          type="password"
+        />
+      </template>
+    </Field>
 
-    <v-btn type="submit" class="w-full rounded-md hover:opacity-80 text-white custom-btn">
+    <v-btn
+      :loading="isPending"
+      type="submit"
+      class="w-full rounded-md hover:opacity-80 text-white custom-btn mt-5"
+    >
       Login
     </v-btn>
+    <div v-if="generalError" class="text-center text-red-500 mt-4">
+      {{ generalError }}
+    </div>
 
     <div class="text-center mt-4">
       <RouterLink
@@ -22,11 +36,16 @@
         Click here if you forgot your password!
       </RouterLink>
     </div>
-  </v-form>
+  </Form>
 </template>
 
 <script lang="ts" setup>
+import { Form, Field } from 'vee-validate'
+
 import { ROUTES } from '@/utils/constants'
+import { useLoginFormController } from './controller'
+
+const { schema, generalError, onSubmit, isPending } = useLoginFormController()
 </script>
 
 <style scoped>
@@ -34,5 +53,11 @@ import { ROUTES } from '@/utils/constants'
 .v-btn--variant-flat {
   background-color: #4caf50;
   color: white;
+}
+
+::v-deep(.v-text-field .v-input__details) {
+  padding-inline: 3px;
+  padding-top: 0px;
+  align-items: center;
 }
 </style>
