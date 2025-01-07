@@ -19,6 +19,10 @@ export const ROUTES = {
     name: 'abouts',
     path: 'abouts',
   },
+  category: {
+    name: 'category',
+    path: 'category',
+  },
 } as const
 
 export const VALIDATION_MESSAGES = {

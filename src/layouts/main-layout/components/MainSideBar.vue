@@ -17,6 +17,13 @@
       <v-list-item :to="{ name: ROUTES.abouts.name }" class="hover:bg-gray-700 text-center" router>
         <v-list-item-title class="text-green-500">Abouts</v-list-item-title>
       </v-list-item>
+      <v-list-item
+        :to="{ name: ROUTES.category.name }"
+        class="hover:bg-gray-700 text-center"
+        router
+      >
+        <v-list-item-title class="text-green-500">Category</v-list-item-title>
+      </v-list-item>
     </v-list>
   </v-navigation-drawer>
 </template>

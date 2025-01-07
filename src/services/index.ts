@@ -1,6 +1,6 @@
 import Cookies from 'js-cookie'
 
-import categoryList from './database/cateories.json'
+import categoryList from './database/categories.json'
 
 export enum ApiPath {
   login = '/login',
@@ -13,19 +13,19 @@ const client = (url: ApiPath) => {
   const accessToken = Cookies.get('token')
   const apiGuest = new Set([ApiPath.login])
 
-  if (accessToken || apiGuest.has(url)) {
-    return new Promise((resolve) =>
-      setTimeout(() => {
-        resolve(handleResponse(url))
-      }, 1500),
-    )
-  }
-
-  return new Promise((_, reject) =>
+  // if (accessToken || apiGuest.has(url)) {
+  return new Promise((resolve) =>
     setTimeout(() => {
-      reject(new Error('Unauthorized'))
+      resolve(handleResponse(url))
     }, 1500),
   )
+  // }
+
+  // return new Promise((_, reject) =>
+  //   setTimeout(() => {
+  //     reject(new Error('Unauthorized'))
+  //   }, 1500),
+  // )
 }
 
 const handleResponse = (url: ApiPath) => {

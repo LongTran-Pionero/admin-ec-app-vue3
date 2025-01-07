@@ -24,6 +24,11 @@ export default [
         name: ROUTES.settings.name,
         component: () => import('@/views/settings-page/index.vue'),
       },
+      {
+        path: ROUTES.category.path,
+        name: ROUTES.category.name,
+        component: () => import('@/views/category-page/index.vue'),
+      },
     ],
   },
   {
