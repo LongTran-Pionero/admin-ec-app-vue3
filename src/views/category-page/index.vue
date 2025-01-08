@@ -1,63 +1,88 @@
 <template>
-  <div>
-    <v-data-table
-      :headers="headers"
-      :items="categories"
-      item-value="id"
-      class="elevation-1"
-      :items-length="30"
-      :page.sync="page"
-      @update:options="loadItems"
-      :loading="loading"
-    >
-      <template v-slot:top>
-        <v-toolbar flat>
-          <v-toolbar-title>Category List</v-toolbar-title>
-        </v-toolbar>
-      </template>
-      <v-pagination :length="4"></v-pagination>
-    </v-data-table>
+  <div class="category-page">
+    <h1>Category</h1>
+    <v-table>
+      <thead>
+        <tr>
+          <th class="text-left">Name</th>
+          <th class="text-left">Image</th>
+          <th class="text-left">Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr v-for="item in categoriesPaginated" :key="item.id">
+          <td>{{ item.name }}</td>
+          <td><span>No Image</span></td>
+          <td><ActionsButton :itemId="item.id" /></td>
+        </tr>
+      </tbody>
+    </v-table>
+
+    <v-pagination
+      :records="categories"
+      :per-page="10"
+      v-model="page"
+      :length="totalPages"
+      :current-page="page"
+      @update:currentPage="changePage"
+    />
   </div>
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, onMounted } from 'vue'
-import { getCategoriesApi } from '@/services/category.service'
+import { defineComponent, ref, onMounted, computed } from 'vue'
+import { fetchCategories, calculateTotalPages } from './controller'
+import type { CategoryType } from '@/types/category.type'
+import ActionsButton from './component/actions-button/index.vue'
 
 export default defineComponent({
   name: 'CategoryPage',
+  components: {
+    ActionsButton,
+  },
   setup() {
-    const categories = ref([])
-    const itemsPerPage = ref(5)
+    const categories = ref<CategoryType[]>([])
     const page = ref(1)
+    const totalPages = ref(1)
+    const perPage = 10
 
-    const headers = [
-      { title: 'Name', value: 'name' },
-      { title: 'Image', value: 'image' },
-      { title: 'Actions', value: 'actions' },
-    ]
+    const fetchData = async () => {
+      const fetchedCategories = await fetchCategories()
+      categories.value = fetchedCategories
+      totalPages.value = calculateTotalPages(categories.value, perPage)
+    }
 
-    onMounted(async () => {
-      try {
-        const response = await getCategoriesApi()
-        categories.value = response.map((category) => ({
-          ...category,
-          image: category.image || 'No image',
-          actions: category.actions || 'No action',
-        }))
-      } catch (error) {
-        console.error(error)
-      }
+    const changePage = (newPage: number) => {
+      page.value = newPage
+    }
+
+    onMounted(() => {
+      fetchData()
+    })
+
+    const categoriesPaginated = computed(() => {
+      const start = (page.value - 1) * perPage
+      const end = start + perPage
+      return categories.value.slice(start, end)
     })
 
     return {
       categories,
-      headers,
-      itemsPerPage,
+      categoriesPaginated,
       page,
+      totalPages,
+      changePage,
     }
   },
 })
 </script>
 
-<style scoped></style>
+<style scoped>
+.category-page {
+  padding: 16px;
+}
+
+h1 {
+  margin-bottom: 16px;
+}
+</style>
